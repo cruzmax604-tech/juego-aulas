@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Congreso Gamificado Docente PRO</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* Container principal */
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Titulo principal */
+h1 {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 10px rgba(255, 200, 0, 0.5);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 10px #fff, 0 0 20px #ff0, 0 0 30px #ff0; }
+  to { text-shadow: 0 0 20px #fff, 0 0 30px #ff8c00, 0 0 40px #ff8c00; }
+}
+
+/* Inputs */
+input[type="text"] {
+  padding: 15px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 300px;
+  margin: 10px auto;
+  display: block;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+  transform: scale(1.02);
+}
+
+/* Avatares */
+.avatares-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.avatar {
+  font-size: 40px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  border: 3px solid transparent;
+}
+
+.avatar:hover {
+  transform: scale(1.2);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.avatar.seleccionado {
+  border-color: gold;
+  background: rgba(255, 215, 0, 0.3);
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+}
+
+/* Botones */
+button {
+  padding: 14px 28px;
+  margin: 10px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.btn-agregar {
+  background: linear-gradient(135deg, #00b09b, #96c93d);
+  color: white;
+}
+
+.btn-agregar:hover {
+  background: linear-gradient(135deg, #00c9a7, #a8e063);
+}
+
+.btn-iniciar {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  color: white;
+  font-size: 18px;
+  padding: 16px 40px;
+}
+
+.btn-iniciar:hover {
+  background: linear-gradient(135deg, #f5a5ff, #ff6b7d);
+}
+
+.btn-musica {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+/* Opciones de respuesta */
+.opcion {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: 12px auto;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, #ffffff, #f0f0f0);
+  color: #333;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.opcion:hover {
+  transform: translateX(10px);
+  background: linear-gradient(135deg, #fff8dc, #fffacd);
+  border-color: gold;
+  box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+}
+
+.correcta {
+  background: linear-gradient(135deg, #00c851, #28a745) !important;
+  color: white !important;
+  transform: scale(1.05);
+  border-color: #00c851 !important;
+}
+
+.incorrecta {
+  background: linear-gradient(135deg, #ff4444, #dc3545) !important;
+  color: white !important;
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+/* Temporizador */
+#temporizador {
+  font-size: clamp(20px, 4vw, 28px);
+  margin: 15px 0;
+  padding: 10px 25px;
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+  color: #333;
+  border-radius: 30px;
+  display: inline-block;
+  font-weight: bold;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+#temporizador.urgente {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  color: white;
+  animation: pulse 0.5s infinite;
+}
+
+/* Pregunta */
+#pregunta {
+  font-size: clamp(18px, 3.5vw, 24px);
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  line-height: 1.5;
+}
+
+/* Panel de puntos */
+.panel-puntos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+}
+
+.puntos-display {
+  font-size: 24px;
+  font-weight: bold;
+  color: gold;
+}
+
+/* Ranking en tiempo real */
+.ranking-container {
+  margin-top: 25px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.ranking-titulo {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: gold;
+}
+
+.ranking-lista {
+  list-style: none;
+  padding: 0;
+}
+
+.ranking-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  margin: 8px 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.ranking-item:first-child {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 165, 0, 0.3));
+  border: 1px solid gold;
+}
+
+.ranking-item:nth-child(2) {
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.3), rgba(169, 169, 169, 0.3));
+}
+
+.ranking-item:nth-child(3) {
+  background: linear-gradient(135deg, rgba(205, 127, 50, 0.3), rgba(184, 115, 51, 0.3));
+}
+
+.ranking-posicion {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.ranking-nombre {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.ranking-puntos {
+  font-weight: bold;
+  color: gold;
+}
+
+/* Lista de jugadores registrados */
+.jugadores-lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.jugador-chip {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Celebracion */
+#celebracion {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f5af19, #f12711);
+  color: white;
+  font-size: clamp(24px, 6vw, 50px);
+  padding: 50px 20px;
+  animation: zoom 0.5s ease;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+@keyframes zoom {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.celebracion-contenido {
+  max-width: 600px;
+  margin: auto;
+  padding-top: 50px;
+}
+
+.podio {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+}
+
+.podio-lugar {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  border-radius: 15px;
+  min-width: 120px;
+}
+
+.podio-lugar.primero {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.5), rgba(255, 165, 0, 0.5));
+  border: 2px solid gold;
+}
+
+.btn-reiniciar {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  color: white;
+  font-size: 18px;
+  margin-top: 30px;
+}
+
+/* Indicador de progreso */
+.progreso-container {
+  margin: 20px 0;
+}
+
+.progreso-barra {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00c851, #ffbb33);
+  transition: width 0.5s ease;
+}
+
+.progreso-texto {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container {
+    padding: 20px 15px;
+    margin: 10px;
+    border-radius: 15px;
+  }
+
+  button {
+    padding: 12px 20px;
+    font-size: 14px;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .avatar {
+    font-size: 32px;
+    padding: 8px;
+  }
+
+  .opcion {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+
+  .ranking-item {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .podio {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Congreso Gamificado Docente</h1>
+
+<!-- Seccion de registro -->
+<div id="registro">
+  <h2 style="margin-bottom: 20px;">Registro de Jugadores</h2>
+
+  <input type="text" id="nombre" placeholder="Nombre del jugador" maxlength="20">
+
+  <p style="margin: 15px 0; opacity: 0.8;">Selecciona tu avatar:</p>
+  <div class="avatares-container" id="avatares">
+    <span class="avatar seleccionado" onclick="seleccionarAvatar(this, '&#x1F469;&#x200D;&#x1F3EB;')">&#x1F469;&#x200D;&#x1F3EB;</span>
+    <span class="avatar" onclick="seleccionarAvatar(this, '&#x1F468;&#x200D;&#x1F3EB;')">&#x1F468;&#x200D;&#x1F3EB;</span>
+    <span class="avatar" onclick="seleccionarAvatar(this, '&#x1F4DA;')">&#x1F4DA;</span>
+    <span class="avatar" onclick="seleccionarAvatar(this, '&#x1F393;')">&#x1F393;</span>
+    <span class="avatar" onclick="seleccionarAvatar(this, '&#x1F9E0;')">&#x1F9E0;</span>
+    <span class="avatar" onclick="seleccionarAvatar(this, '&#x2B50;')">&#x2B50;</span>
+    <span class="avatar" onclick="seleccionarAvatar(this, '&#x1F680;')">&#x1F680;</span>
+  </div>
+
+  <button class="btn-agregar" onclick="agregarJugador()">Agregar Jugador</button>
+
+  <h3 style="margin: 20px 0;">Jugadores: <span id="cantidad">0</span>/45</h3>
+
+  <div class="jugadores-lista" id="listaJugadores"></div>
+
+  <button class="btn-iniciar" onclick="iniciarJuego()">Iniciar Juego</button>
+
+  <br><br>
+  <button class="btn-musica" onclick="toggleMusica()">Probar Musica</button>
+</div>
+
+<!-- Seccion del juego -->
+<div id="juego" style="display:none;">
+
+  <div class="progreso-container">
+    <div class="progreso-barra">
+      <div class="progreso-fill" id="progresoFill" style="width: 0%"></div>
+    </div>
+    <div class="progreso-texto">Pregunta <span id="preguntaNum">1</span> de <span id="totalPreguntas">15</span></div>
+  </div>
+
+  <h2 id="pregunta"></h2>
+
+  <div id="temporizador"></div>
+
+  <div id="opciones"></div>
+
+  <div class="panel-puntos">
+    <span>Jugador actual: <strong id="jugadorActualNombre"></strong></span>
+    <span class="puntos-display">Puntos: <span id="puntos">0</span></span>
+  </div>
+
+  <!-- Ranking en tiempo real -->
+  <div class="ranking-container">
+    <div class="ranking-titulo">Ranking en Tiempo Real</div>
+    <ul class="ranking-lista" id="rankingLista"></ul>
+  </div>
+
+</div>
+
+</div>
+
+<!-- Pantalla de celebracion -->
+<div id="celebracion">
+  <div class="celebracion-contenido" id="celebracionContenido"></div>
+</div>
+
+<!-- Audio de fondo -->
+<audio id="musicaFondo" loop>
+  <source src="src=cancion.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+// Variables globales
+let jugadores = [];
+let jugadorActual = 0;
+let avatarSeleccionado = "&#x1F469;&#x200D;&#x1F3EB;";
+let indice = 0;
+let tiempo = 30;
+let intervalo;
+let inicioTiempo;
+let musicaActiva = false;
+
+// Preguntas del juego
+const preguntas = [
+  {p: "Las competencias fundamentales del curriculo dominicano son:", o: ["Etica, comunicativa, cientifica", "Memoria, disciplina", "Conducta rigida", "Repeticion constante"], r: 0},
+  {p: "La planificacion por competencias busca:", o: ["Desarrollo integral", "Cantidad de tareas", "Examenes largos", "Control conductual"], r: 0},
+  {p: "La evaluacion formativa permite:", o: ["Retroalimentar el aprendizaje", "Castigar errores", "Eliminar contenido", "Comparar estudiantes"], r: 0},
+  {p: "Un indicador de logro describe:", o: ["Evidencia observable", "Opinion subjetiva", "Actividad aislada", "Tema general"], r: 0},
+  {p: "La secuencia didactica incluye:", o: ["Inicio, desarrollo y cierre", "Solo inicio", "Solo examen", "Solo tareas"], r: 0},
+  {p: "La transversalidad promueve:", o: ["Integracion de valores", "Memorizacion", "Competencia individual", "Examenes sorpresas"], r: 0},
+  {p: "La planificacion anual organiza:", o: ["Competencias y contenidos", "Solo fechas", "Examenes finales", "Notas"], r: 0},
+  {p: "El aprendizaje significativo ocurre cuando:", o: ["Conecta con saberes previos", "Se memoriza", "Se copia", "Se repite"], r: 0},
+  {p: "La rubrica contiene:", o: ["Criterios y niveles", "Solo nota", "Colores", "Opiniones"], r: 0},
+  {p: "El enfoque por competencias prioriza:", o: ["Saber hacer", "Memorizar", "Repetir", "Escuchar pasivamente"], r: 0},
+  {p: "La metacognicion implica:", o: ["Reflexion sobre aprendizaje", "Memoria", "Disciplina", "Examen final"], r: 0},
+  {p: "Los contenidos se organizan en:", o: ["Conceptuales, procedimentales y actitudinales", "Solo conceptuales", "Solo actitudinales", "Solo notas"], r: 0},
+  {p: "La planificacion diaria se basa en:", o: ["Competencias e indicadores", "Improvisacion", "Castigo", "Memoria"], r: 0},
+  {p: "El portafolio es una herramienta de:", o: ["Evaluacion autentica", "Castigo", "Disciplina", "Control"], r: 0},
+  {p: "La inclusion educativa garantiza:", o: ["Equidad y participacion", "Exclusion", "Comparacion", "Competencia rigida"], r: 0}
+];
+
+// Seleccionar avatar con indicador visual
+function seleccionarAvatar(elemento, avatar) {
+  document.querySelectorAll('.avatar').forEach(a => a.classList.remove('seleccionado'));
+  elemento.classList.add('seleccionado');
+  avatarSeleccionado = avatar;
+}
+
+// Agregar jugador
+function agregarJugador() {
+  if (jugadores.length >= 45) {
+    mostrarAlerta("Maximo 45 jugadores permitidos");
+    return;
+  }
+
+  const nombreInput = document.getElementById("nombre");
+  const nombre = nombreInput.value.trim();
+
+  if (nombre === "") {
+    mostrarAlerta("Por favor escribe un nombre");
+    return;
+  }
+
+  // Verificar nombre duplicado
+  if (jugadores.some(j => j.nombre.toLowerCase() === nombre.toLowerCase())) {
+    mostrarAlerta("Este nombre ya esta registrado");
+    return;
+  }
+
+  jugadores.push({
+    nombre: nombre,
+    avatar: avatarSeleccionado,
+    puntos: 0
+  });
+
+  document.getElementById("cantidad").innerText = jugadores.length;
+  nombreInput.value = "";
+
+  actualizarListaJugadores();
+}
+
+// Actualizar lista visual de jugadores
+function actualizarListaJugadores() {
+  const lista = document.getElementById("listaJugadores");
+  lista.innerHTML = jugadores.map(j =>
+    `<div class="jugador-chip">${j.avatar} ${j.nombre}</div>`
+  ).join('');
+}
+
+// Mostrar alerta personalizada
+function mostrarAlerta(mensaje) {
+  alert(mensaje);
+}
+
+// Iniciar juego
+function iniciarJuego() {
+  if (jugadores.length === 0) {
+    mostrarAlerta("Agrega al menos un jugador para comenzar");
+    return;
+  }
+
+  document.getElementById("registro").style.display = "none";
+  document.getElementById("juego").style.display = "block";
+  document.getElementById("totalPreguntas").innerText = preguntas.length;
+
+  // Iniciar musica
+  const musica = document.getElementById("musicaFondo");
+  musica.volume = 0.3;
+  musica.play().catch(e => console.log("Autoplay bloqueado por el navegador"));
+
+  mostrarPregunta();
+}
+
+// Mostrar pregunta actual
+function mostrarPregunta() {
+  if (indice >= preguntas.length) {
+    finalJuego();
+    return;
+  }
+
+  // Actualizar progreso
+  const progreso = ((indice) / preguntas.length) * 100;
+  document.getElementById("progresoFill").style.width = progreso + "%";
+  document.getElementById("preguntaNum").innerText = indice + 1;
+
+  // Configurar temporizador
+  tiempo = 30;
+  inicioTiempo = Date.now();
+  actualizarTemporizador();
+
+  intervalo = setInterval(() => {
+    tiempo--;
+    actualizarTemporizador();
+
+    if (tiempo <= 0) {
+      clearInterval(intervalo);
+      indice++;
+      mostrarPregunta();
+    }
+  }, 1000);
+
+  // Mostrar pregunta con opciones mezcladas
+  const p = preguntas[indice];
+  const respuestaCorrecta = p.o[p.r];
+  const opcionesMezcladas = [...p.o].sort(() => Math.random() - 0.5);
+
+  document.getElementById("pregunta").innerText = p.p;
+  document.getElementById("jugadorActualNombre").innerText =
+    jugadores[jugadorActual].avatar + " " + jugadores[jugadorActual].nombre;
+
+  let html = "";
+  opcionesMezcladas.forEach(op => {
+    const opcionEscapada = op.replace(/'/g, "\\'");
+    const correctaEscapada = respuestaCorrecta.replace(/'/g, "\\'");
+    html += `<button class="opcion" onclick="responder(this, '${opcionEscapada}', '${correctaEscapada}')">${op}</button>`;
+  });
+
+  document.getElementById("opciones").innerHTML = html;
+  actualizarRanking();
+}
+
+// Actualizar display del temporizador
+function actualizarTemporizador() {
+  const tempElement = document.getElementById("temporizador");
+  tempElement.innerText = "Tiempo: " + tiempo + "s";
+
+  if (tiempo <= 10) {
+    tempElement.classList.add("urgente");
+  } else {
+    tempElement.classList.remove("urgente");
+  }
+}
+
+// Procesar respuesta
+function responder(btn, opcion, correcta) {
+  clearInterval(intervalo);
+
+  // Deshabilitar todas las opciones
+  document.querySelectorAll('.opcion').forEach(o => o.disabled = true);
+
+  const tiempoRespuesta = (Date.now() - inicioTiempo) / 1000;
+  const puntosGanados = Math.max(10, Math.floor(100 - tiempoRespuesta * 3));
+
+  if (opcion === correcta) {
+    btn.classList.add("correcta");
+    jugadores[jugadorActual].puntos += puntosGanados;
+  } else {
+    btn.classList.add("incorrecta");
+    // Mostrar respuesta correcta
+    document.querySelectorAll('.opcion').forEach(o => {
+      if (o.innerText === correcta) {
+        o.classList.add("correcta");
+      }
+    });
+  }
+
+  document.getElementById("puntos").innerText = jugadores[jugadorActual].puntos;
+  actualizarRanking();
+
+  setTimeout(() => {
+    indice++;
+    mostrarPregunta();
+  }, 1800);
+}
+
+// Actualizar ranking en tiempo real
+function actualizarRanking() {
+  const rankingOrdenado = [...jugadores].sort((a, b) => b.puntos - a.puntos);
+  const lista = document.getElementById("rankingLista");
+
+  const medallas = ["&#x1F947;", "&#x1F948;", "&#x1F949;"];
+
+  lista.innerHTML = rankingOrdenado.map((j, i) => `
+    <li class="ranking-item">
+      <span class="ranking-posicion">${i < 3 ? medallas[i] : (i + 1) + "."}</span>
+      <span class="ranking-nombre">${j.avatar} ${j.nombre}</span>
+      <span class="ranking-puntos">${j.puntos} pts</span>
+    </li>
+  `).join('');
+}
+
+// Final del juego
+function finalJuego() {
+  document.getElementById("musicaFondo").pause();
+
+  const rankingFinal = [...jugadores].sort((a, b) => b.puntos - a.puntos);
+  const ganador = rankingFinal[0];
+  const segundo = rankingFinal[1];
+  const tercero = rankingFinal[2];
+
+  let podioHTML = `
+    <h1>&#x1F3C6; RESULTADOS FINALES &#x1F3C6;</h1>
+    <div class="podio">
+  `;
+
+  if (segundo) {
+    podioHTML += `
+      <div class="podio-lugar">
+        <div style="font-size: 40px;">&#x1F948;</div>
+        <div style="font-size: 30px;">${segundo.avatar}</div>
+        <div>${segundo.nombre}</div>
+        <div style="color: gold; font-weight: bold;">${segundo.puntos} pts</div>
+      </div>
+    `;
+  }
+
+  podioHTML += `
+    <div class="podio-lugar primero">
+      <div style="font-size: 50px;">&#x1F947;</div>
+      <div style="font-size: 40px;">${ganador.avatar}</div>
+      <div style="font-size: 20px;">${ganador.nombre}</div>
+      <div style="color: gold; font-weight: bold; font-size: 24px;">${ganador.puntos} pts</div>
+    </div>
+  `;
+
+  if (tercero) {
+    podioHTML += `
+      <div class="podio-lugar">
+        <div style="font-size: 40px;">&#x1F949;</div>
+        <div style="font-size: 30px;">${tercero.avatar}</div>
+        <div>${tercero.nombre}</div>
+        <div style="color: gold; font-weight: bold;">${tercero.puntos} pts</div>
+      </div>
+    `;
+  }
+
+  podioHTML += `
+    </div>
+    <h2>&#x1F389; FELICIDADES A TODOS &#x1F389;</h2>
+    <button class="btn-reiniciar" onclick="reiniciarJuego()">Jugar de Nuevo</button>
+  `;
+
+  document.getElementById("celebracionContenido").innerHTML = podioHTML;
+  document.getElementById("celebracion").style.display = "block";
+}
+
+// Reiniciar juego
+function reiniciarJuego() {
+  jugadores.forEach(j => j.puntos = 0);
+  indice = 0;
+  jugadorActual = 0;
+
+  document.getElementById("celebracion").style.display = "none";
+  document.getElementById("juego").style.display = "none";
+  document.getElementById("registro").style.display = "block";
+  document.getElementById("puntos").innerText = "0";
+  document.getElementById("progresoFill").style.width = "0%";
+}
+
+// Toggle musica
+function toggleMusica() {
+  const musica = document.getElementById("musicaFondo");
+
+  if (musicaActiva) {
+    musica.pause();
+    musicaActiva = false;
+  } else {
+    musica.volume = 0.3;
+    musica.play().then(() => {
+      musicaActiva = true;
+    }).catch(e => {
+      console.log("Error al reproducir:", e);
+      mostrarAlerta("No se pudo reproducir la musica. Intenta interactuar con la pagina primero.");
+    });
+  }
+}
+
+// Permitir agregar jugador con Enter
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('nombre').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      agregarJugador();
+    }
+  });
+});
+
+</script>
+
+</body>
+</html>

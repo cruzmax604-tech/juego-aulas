@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula Virtual Gamificada</title>
+
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 20px;
+  margin: 0;
+  background: url("https://images.unsplash.com/photo-1606326608606-aa0b62935f2b");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* VIDEO DE FONDO */
+#videoFondo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+
+/* EFECTO VIDRIO */
+section, table, .caja, #areaJuego {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(6px);
+  border-radius: 15px;
+  padding: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  margin-bottom: 30px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+th {
+  background: #4CAF50;
+  color: white;
+  font-size: 16px;
+}
+
+td {
+  font-size: 14px;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: 0.3s;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  margin: 5px;
+}
+
+button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.dar { background: green; }
+.quitar { background: #991b1b; }
+
+.equipos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.caja {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
+}
+
+.caja:hover {
+  transform: scale(1.03);
+}
+
+canvas {
+  transition: transform 3s ease-out;
+}
+
+@media (max-width: 768px) {
+  .equipos {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ENCABEZADO */
+.encabezado {
+  background: linear-gradient(90deg, #4CAF50, #2e7d32);
+  color: white;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  margin-bottom: 25px;
+}
+
+.encabezado h1 {
+  margin: 0;
+  font-size: 35px;
+}
+
+.encabezado p {
+  margin: 5px;
+  font-size: 18px;
+}
+
+/* NAVEGACION */
+nav {
+  background: #2e7d32;
+  padding: 15px;
+  text-align: center;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+nav a {
+  color: white;
+  margin: 15px;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* BOTON ESPECIAL PARA CONGRESO */
+.btn-congreso {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  color: white;
+  padding: 18px 35px;
+  font-size: 20px;
+  border-radius: 15px;
+  animation: pulse 2s infinite;
+}
+
+.btn-congreso:hover {
+  background: linear-gradient(135deg, #f5a5ff, #ff6b7d);
+  transform: scale(1.1);
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(240, 147, 251, 0.5); }
+  50% { box-shadow: 0 0 25px rgba(240, 147, 251, 0.8); }
+}
+
+/* SECCION DESTACADA */
+.seccion-destacada {
+  border: 3px solid #4CAF50;
+  padding: 20px;
+  border-radius: 15px;
+  background-color: rgba(240, 255, 244, 0.95);
+  text-align: center;
+  margin: 20px auto;
+  max-width: 800px;
+}
+
+/* BARRA DE PROGRESO */
+.barra {
+  background: #ddd;
+  border-radius: 20px;
+  width: 80%;
+  margin: 10px auto;
+}
+
+.progreso {
+  background: #4CAF50;
+  padding: 10px;
+  border-radius: 20px;
+  color: white;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<!-- VIDEO DE FONDO -->
+<video autoplay muted loop id="videoFondo">
+  <source src="https://cdn.coverr.co/videos/coverr-students-in-a-classroom-5176/1080p.mp4" type="video/mp4">
+</video>
+
+<!-- ENCABEZADO -->
+<div class="encabezado">
+  <h1>🎮 Aula Virtual Gamificada</h1>
+  <p>Sistema de puntos y juegos educativos</p>
+</div>
+
+<!-- ========================================== -->
+<!-- 🔥 BOTON PARA EL CONGRESO GAMIFICADO 🔥 -->
+<!-- ========================================== -->
+<div style="text-align: center; margin: 30px 0;">
+  <a href="congreso-gamificado-mejorado.html" style="text-decoration: none;">
+    <button class="btn-congreso">
+      🏆 JUGAR CONGRESO DOCENTE 🏆
+    </button>
+  </a>
+  <p style="color: white; text-shadow: 1px 1px 3px black;">
+    ¡Nuevo juego de trivia para docentes!
+  </p>
+</div>
+<!-- ========================================== -->
+
+<!-- NAVEGACION -->
+<nav>
+  <a href="#ciencias">🔬 Ciencias Naturales</a>
+  <a href="#matematica">➗ Matemática</a>
+  <a href="#sociales">🌎 Ciencias Sociales</a>
+  <a href="#lengua">📖 Lengua Española</a>
+</nav>
+
+<!-- BOTONES PRINCIPALES -->
+<div style="text-align: center; margin: 20px 0;">
+  <button onclick="resetear()" style="background: #ff5722;">🔄 Reiniciar Juego</button>
+  <a href="https://wordwall.net/play/83089/869/404" target="_blank">
+    <button style="background: #2196F3;">🎯 Jugar Propiedades de la Suma</button>
+  </a>
+</div>
+
+<!-- SECCION SISTEMA DEL CUERPO HUMANO -->
+<section class="seccion-destacada" id="ciencias">
+  <h2 style="color: #2e7d32;">🫀 Sistema del Cuerpo Humano</h2>
+
+  <a href="https://wordwall.net/play/83089/869/404" target="_blank">
+    <button style="background: #4CAF50; padding: 15px 25px; font-size: 18px;">
+      🎮 Jugar cuestionario
+    </button>
+  </a>
+
+  <hr style="margin: 25px 0;">
+
+  <h3>🥇 Top 3 semanal</h3>
+  <p>1️⃣ ____________________</p>
+  <p>2️⃣ ____________________</p>
+  <p>3️⃣ ____________________</p>
+
+  <h3>⭐ Estrella del día</h3>
+  <p>🌟 ____________________</p>
+</section>
+
+<!-- PROGRESO DEL ESTUDIANTE -->
+<section>
+  <h3>📊 Progreso del estudiante</h3>
+  <p><strong>Juan Pérez</strong></p>
+  <div class="barra">
+    <div class="progreso" style="width: 80%;">80%</div>
+  </div>
+</section>
+
+<!-- RULETA DE PREMIOS -->
+<section>
+  <h2>🎡 Ruleta de Premios</h2>
+
+  <div style="text-align: center;">
+    <canvas id="ruleta" width="300" height="300"
+      style="border: 8px solid purple; border-radius: 50%; background: white;">
+    </canvas>
+    <br><br>
+    <button onclick="girarRuletaVisual()" style="background: purple;">🎡 Girar Ruleta</button>
+    <div id="resultadoRuleta" style="font-size: 22px; font-weight: bold; margin-top: 10px;"></div>
+  </div>
+
+  <h3>✏️ Editar Premios</h3>
+  <textarea id="editorPremios" rows="6" style="width: 300px;"></textarea>
+  <br>
+  <button onclick="guardarPremios()" style="background: #607d8b;">💾 Guardar Cambios</button>
+</section>
+
+<!-- JUEGOS EDUCATIVOS -->
+<section>
+  <h2>🎮 Juegos Educativos</h2>
+
+  <label><strong>Selecciona Estudiante:</strong></label>
+  <select id="estudianteActivo">
+    <option value="">-- Elegir --</option>
+  </select>
+
+  <br><br>
+
+  <button onclick="juegoSumas()" style="background: #4CAF50;">🧮 Sumas</button>
+  <button onclick="juegoMultiplicar()" style="background: #2196F3;">✖️ Multiplicar</button>
+  <button onclick="juegoRestas()" style="background: #ff9800;">➖ Restas</button>
+  <button onclick="juegoDivision()" style="background: #9c27b0;">➗ División</button>
+  <button onclick="juegoLectura()" style="background: #00bcd4;">📖 Lectura</button>
+  <button onclick="juegoQuiz()" style="background: #e91e63;">❓ Quiz</button>
+  <button onclick="juegoKahoot()" style="background: #ff5722;">🏆 Kahoot</button>
+  <button onclick="juegoProblema()" style="background: #795548;">🧠 Problema</button>
+  <button onclick="juegoMemoria()" style="background: #607d8b;">🧩 Memoria</button>
+  <button onclick="juegoVF()" style="background: #8bc34a;">✅ V/F</button>
+  <button onclick="juegoTiempo()" style="background: #f44336;">⏱️ Contra Tiempo</button>
+  <button onclick="megaQuiz()" style="background: linear-gradient(135deg, #667eea, #764ba2);">🧠 MEGA QUIZ</button>
+
+  <div id="areaJuego" style="margin-top: 20px; padding: 20px; background: #eee; border-radius: 15px;">
+    Selecciona un juego para comenzar
+  </div>
+</section>
+
+<!-- TIENDA DE PREMIOS -->
+<section>
+  <h2>🛒 Tienda de Premios</h2>
+
+  <label><strong>Selecciona Estudiante:</strong></label>
+  <select id="comprador">
+    <option value="">-- Elegir --</option>
+  </select>
+
+  <br><br>
+
+  <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+    <button onclick="comprar(50)" style="background: #ff9800;">🍬 Dulce — 50 pts</button>
+    <button onclick="comprar(80)" style="background: #2196F3;">🎧 Música — 80 pts</button>
+    <button onclick="comprar(100)" style="background: #9c27b0;">📚 Sin tarea — 100 pts</button>
+    <button onclick="comprar(150)" style="background: #4CAF50;">🎉 Recreo extra — 150 pts</button>
+    <button onclick="comprar(200)" style="background: #f44336;">🏆 Premio sorpresa — 200 pts</button>
+  </div>
+
+  <div id="mensajeCompra" style="margin-top: 15px; font-weight: bold;"></div>
+</section>
+
+<!-- PODIO -->
+<section>
+  <h2>🏆 Podio</h2>
+  <div style="display: flex; gap: 20px; text-align: center;">
+    <div id="primero" style="background: gold; flex: 1; padding: 20px; border-radius: 10px;">🥇</div>
+    <div id="segundo" style="background: silver; flex: 1; padding: 20px; border-radius: 10px;">🥈</div>
+    <div id="tercero" style="background: #cd7f32; flex: 1; padding: 20px; border-radius: 10px;">🥉</div>
+  </div>
+</section>
+
+<!-- TABLA GENERAL -->
+<section>
+  <h2>📋 Lista General de Estudiantes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Estudiante</th>
+        <th>Puntos</th>
+        <th>+10</th>
+        <th>-10</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+</section>
+
+<!-- PODIO DE EQUIPOS -->
+<section>
+  <h2>🏆 Podio de Equipos</h2>
+  <div style="display: flex; gap: 20px; margin-bottom: 20px; text-align: center;">
+    <div id="podioEq1" style="background: gold; flex: 1; padding: 15px; border-radius: 10px;">🥇</div>
+    <div id="podioEq2" style="background: silver; flex: 1; padding: 15px; border-radius: 10px;">🥈</div>
+    <div id="podioEq3" style="background: #cd7f32; flex: 1; padding: 15px; border-radius: 10px;">🥉</div>
+  </div>
+</section>
+
+<!-- PUNTOS POR EQUIPOS -->
+<section>
+  <h2>📊 Puntos por Equipos</h2>
+  <table>
+    <tr><th>Equipo</th><th>Puntos</th></tr>
+    <tr><td>Equipo 1</td><td id="equipo1">0</td></tr>
+    <tr><td>Equipo 2</td><td id="equipo2">0</td></tr>
+    <tr><td>Equipo 3</td><td id="equipo3">0</td></tr>
+    <tr><td>Equipo 4</td><td id="equipo4">0</td></tr>
+    <tr><td>Equipo 5</td><td id="equipo5">0</td></tr>
+    <tr><td>Equipo 6</td><td id="equipo6">0</td></tr>
+  </table>
+</section>
+
+<!-- SECCIONES DE MATERIAS -->
+<section id="matematica">
+  <h2>➗ Matemática</h2>
+  <p>Juegos de suma, resta, multiplicación y división disponibles arriba.</p>
+</section>
+
+<section id="sociales">
+  <h2>🌎 Ciencias Sociales</h2>
+  <a href="https://wordwall.net/play/83551/835/299" target="_blank">
+    <button style="background: #4CAF50; padding: 15px 25px;">🎮 Los Viajes de Cristóbal Colón</button>
+  </a>
+</section>
+
+<section id="lengua">
+  <h2>📖 Lengua Española</h2>
+  <p>Juegos de lectura disponibles arriba.</p>
+</section>
+
+<!-- FOOTER -->
+<footer style="text-align: center; padding: 20px; background: #2e7d32; color: white; border-radius: 10px; margin-top: 20px;">
+  Aula Virtual Gamificada © 2026
+</footer>
+
+<script>
+
+// ==================== MEGA QUIZ ====================
+let preguntasMega = [
+  {p: "¿Cuánto es 6 x 5?", o: ["30", "25", "35"], r: 0},
+  {p: "Capital de República Dominicana", o: ["Santiago", "Santo Domingo", "La Vega"], r: 1},
+  {p: "¿Cuánto es 20 ÷ 4?", o: ["5", "6", "4"], r: 0},
+  {p: "Animal que vuela", o: ["Perro", "Águila", "Gato"], r: 1},
+  {p: "¿Cuánto es 9 x 9?", o: ["81", "72", "99"], r: 0}
+];
+
+let indiceMega = 0;
+let puntosMega = 0;
+
+function megaQuiz() {
+  indiceMega = 0;
+  puntosMega = 0;
+  mostrarMega();
+}
+
+function mostrarMega() {
+  let q = preguntasMega[indiceMega];
+  areaJuego.innerHTML = `
+    <h3>${q.p}</h3>
+    <button onclick="respMega(0)">${q.o[0]}</button>
+    <button onclick="respMega(1)">${q.o[1]}</button>
+    <button onclick="respMega(2)">${q.o[2]}</button>
+  `;
+}
+
+function respMega(i) {
+  if (i == preguntasMega[indiceMega].r) {
+    puntosMega += 10;
+    alert("¡Correcto!");
+  } else {
+    alert("Incorrecto");
+  }
+  indiceMega++;
+  if (indiceMega < preguntasMega.length) {
+    mostrarMega();
+  } else {
+    darPuntos(puntosMega);
+    areaJuego.innerHTML = `<h2>¡Juego terminado!</h2><h3>Puntos ganados: ${puntosMega}</h3>`;
+  }
+}
+
+// ==================== ESTUDIANTES ====================
+let estudiantes = [
+  "AMELIA REYES MEJIA", "ANAHIA ROSARIO PRENSA", "ANAYCHELIN DE JESUS DE LA CRUZ",
+  "ANDERSON ELIAN PEGUERO MEDINA", "ANEIRY ARIANNY HICHEZ PEGUERO",
+  "ANGEL DAVID CONCEPCION CASTILLO", "ANTHONY MANUEL GONZALEZ DE LA CRUZ",
+  "ANGELIE ZAPATA MORENO", "ASAELY PIERRE VEUS", "NATHALIA GARCIA BRAUNNY",
+  "BRAYAN EDUARDO FROMETA ARIAS", "CRISVIEL ENMANUJEL VALERA FAMILIA",
+  "DALMIN YARIEL ROSARIO ESTRELLA", "EMILY LEYLA ROJAS CASTILLO",
+  "ENGEL MIGUEL CASTRO DE CENA", "ESMERLIN DANIEL HERNANDEZ",
+  "EURY ANTONIO TOLENTINO SENA", "FRANCELIS ELIANDA VENTURA GOMEZ",
+  "FRANCHELIS MARIAN CASTILLO POLANCO", "FRANCHESCA LESLIANNI CONCEPCION",
+  "GREYDER OSCAR FAMILIA GUZMAN", "HECTOR ENRIQUE GUERRERO",
+  "JAIRIELIS DE LA CRUZ", "JAY STE VICENTE MONTERO", "JOSE RAMON BENITEZ",
+  "JUNIELIS YALIA LIRIA RODRIGUEZ", "KIORDY JUNIOR VASQUEZ RODRIGUEZ",
+  "LUIS ANGEL BASORA LEONARDO", "LUIS RAYNIEL LOPEZ MARTINEZ",
+  "MATHEWS SKERLIN GONZALEZ HERNANDEZ", "NAITMARY SANTANA PAYANO",
+  "NASHLA ANALIA TORRES CONCEPCION", "OMARKI DE LA CRUZ CORNIELE",
+  "REINY JOSMA SARMIENTOS MARTINEZ", "ROSHELSSYS BENITEZ PRENSA",
+  "YOMAIRY JIMENEZ MOREY"
+];
+
+const equiposMapa = {
+  "AMELIA REYES MEJIA": 1, "ANAHIA ROSARIO PRENSA": 2, "ANAYCHELIN DE JESUS DE LA CRUZ": 3,
+  "ANDERSON ELIAN PEGUERO MEDINA": 4, "ANEIRY ARIANNY HICHEZ PEGUERO": 5,
+  "ANGEL DAVID CONCEPCION CASTILLO": 6, "ANTHONY MANUEL GONZALEZ DE LA CRUZ": 6,
+  "ANGELIE ZAPATA MORENO": 1, "ASAELY PIERRE VEUS": 2, "NATHALIA GARCIA BRAUNNY": 1,
+  "BRAYAN EDUARDO FROMETA ARIAS": 6, "CRISVIEL ENMANUJEL VALERA FAMILIA": 6,
+  "DALMIN YARIEL ROSARIO ESTRELLA": 5, "EMILY LEYLA ROJAS CASTILLO": 4,
+  "ENGEL MIGUEL CASTRO DE CENA": 4, "ESMERLIN DANIEL HERNANDEZ": 2,
+  "EURY ANTONIO TOLENTINO SENA": 6, "FRANCELIS ELIANDA VENTURA GOMEZ": 3,
+  "FRANCHELIS MARIAN CASTILLO POLANCO": 4, "FRANCHESCA LESLIANNI CONCEPCION": 1,
+  "GREYDER OSCAR FAMILIA GUZMAN": 3, "HECTOR ENRIQUE GUERRERO": 6,
+  "JAIRIELIS DE LA CRUZ": 4, "JAY STE VICENTE MONTERO": 1, "JOSE RAMON BENITEZ": 5,
+  "JUNIELIS YALIA LIRIA RODRIGUEZ": 2, "KIORDY JUNIOR VASQUEZ RODRIGUEZ": 6,
+  "LUIS ANGEL BASORA LEONARDO": 1, "LUIS RAYNIEL LOPEZ MARTINEZ": 4,
+  "MATHEWS SKERLIN GONZALEZ HERNANDEZ": 5, "NAITMARY SANTANA PAYANO": 2,
+  "NASHLA ANALIA TORRES CONCEPCION": 3, "OMARKI DE LA CRUZ CORNIELE": 4,
+  "REINY JOSMA SARMIENTOS MARTINEZ": 5, "ROSHELSSYS BENITEZ PRENSA": 5,
+  "YOMAIRY JIMENEZ MOREY": 3
+};
+
+const nombresEquipos = {1: "Equipo 1", 2: "Equipo 2", 3: "Equipo 3", 4: "Equipo 4", 5: "Equipo 5", 6: "Equipo 6"};
+
+// ==================== CREAR TABLA ====================
+let tabla = document.getElementById("tabla");
+
+estudiantes.forEach(nombre => {
+  let fila = document.createElement("tr");
+  fila.innerHTML = `
+    <td>${nombre}</td>
+    <td class="puntos">0</td>
+    <td><button class="dar" onclick="sumar(this)">+10</button></td>
+    <td><button class="quitar" onclick="restar(this)">-10</button></td>
+  `;
+  tabla.appendChild(fila);
+});
+
+// ==================== GUARDAR/CARGAR PUNTOS ====================
+function guardarPuntos() {
+  let datos = [];
+  document.querySelectorAll("#tabla tr").forEach(fila => {
+    datos.push(fila.querySelector(".puntos").textContent);
+  });
+  localStorage.setItem("puntosEstudiantes", JSON.stringify(datos));
+}
+
+let guardados = JSON.parse(localStorage.getItem("puntosEstudiantes"));
+if (guardados) {
+  document.querySelectorAll("#tabla tr").forEach((fila, i) => {
+    fila.querySelector(".puntos").textContent = guardados[i] || 0;
+  });
+  actualizarPodio();
+  actualizarEquipos();
+}
+
+// ==================== LLENAR SELECTS ====================
+let select = document.getElementById("estudianteActivo");
+let compradorSelect = document.getElementById("comprador");
+
+estudiantes.forEach((n, i) => {
+  select.innerHTML += `<option value="${i}">${n}</option>`;
+  compradorSelect.innerHTML += `<option value="${i}">${n}</option>`;
+});
+
+// ==================== SUMAR/RESTAR ====================
+function sumar(btn) {
+  let fila = btn.parentElement.parentElement;
+  let celda = fila.querySelector(".puntos");
+  celda.textContent = parseInt(celda.textContent) + 10;
+  guardarPuntos();
+  actualizarPodio();
+  actualizarEquipos();
+}
+
+function restar(btn) {
+  let fila = btn.parentElement.parentElement;
+  let celda = fila.querySelector(".puntos");
+  let p = parseInt(celda.textContent) - 10;
+  if (p < 0) p = 0;
+  celda.textContent = p;
+  guardarPuntos();
+  actualizarPodio();
+  actualizarEquipos();
+}
+
+// ==================== PODIO ====================
+function actualizarPodio() {
+  let datos = [];
+  document.querySelectorAll("#tabla tr").forEach(fila => {
+    datos.push({
+      nombre: fila.children[0].textContent,
+      puntos: parseInt(fila.querySelector(".puntos").textContent)
+    });
+  });
+  datos.sort((a, b) => b.puntos - a.puntos);
+  if (datos[0]) primero.innerHTML = "🥇 " + datos[0].nombre + "<br>" + datos[0].puntos + " pts";
+  if (datos[1]) segundo.innerHTML = "🥈 " + datos[1].nombre + "<br>" + datos[1].puntos + " pts";
+  if (datos[2]) tercero.innerHTML = "🥉 " + datos[2].nombre + "<br>" + datos[2].puntos + " pts";
+}
+
+function actualizarPodioEquipos() {
+  let datos = [];
+  for (let i = 1; i <= 6; i++) {
+    datos.push({
+      nombre: nombresEquipos[i],
+      puntos: parseInt(document.getElementById("equipo" + i).textContent)
+    });
+  }
+  datos.sort((a, b) => b.puntos - a.puntos);
+  podioEq1.innerHTML = "🥇 " + datos[0].nombre + "<br>" + datos[0].puntos + " pts";
+  podioEq2.innerHTML = "🥈 " + datos[1].nombre + "<br>" + datos[1].puntos + " pts";
+  podioEq3.innerHTML = "🥉 " + datos[2].nombre + "<br>" + datos[2].puntos + " pts";
+}
+
+// ==================== EQUIPOS ====================
+function actualizarEquipos() {
+  let totales = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+  document.querySelectorAll("#tabla tr").forEach(fila => {
+    let nombre = fila.children[0].textContent;
+    let puntos = parseInt(fila.querySelector(".puntos").textContent);
+    let eq = equiposMapa[nombre];
+    if (eq) totales[eq] += puntos;
+  });
+  for (let i = 1; i <= 6; i++) {
+    document.getElementById("equipo" + i).textContent = totales[i];
+  }
+  actualizarPodioEquipos();
+}
+
+// ==================== RULETA ====================
+let premiosRuleta = ["+50 puntos", "Dulce", "Sin tarea", "Recreo extra"];
+let canvas = document.getElementById("ruleta");
+let ctx = canvas.getContext("2d");
+
+function dibujarRuleta() {
+  ctx.clearRect(0, 0, 300, 300);
+  let ang = 2 * Math.PI / premiosRuleta.length;
+  for (let i = 0; i < premiosRuleta.length; i++) {
+    ctx.beginPath();
+    ctx.moveTo(150, 150);
+    ctx.arc(150, 150, 150, i * ang, (i + 1) * ang);
+    ctx.fillStyle = `hsl(${i * 90}, 70%, 60%)`;
+    ctx.fill();
+    ctx.save();
+    ctx.translate(150, 150);
+    ctx.rotate(i * ang + ang / 2);
+    ctx.fillStyle = "white";
+    ctx.font = "12px Arial";
+    ctx.fillText(premiosRuleta[i], 40, 5);
+    ctx.restore();
+  }
+}
+
+function girarRuletaVisual() {
+  let grados = Math.floor(Math.random() * 360) + 720;
+  canvas.style.transform = `rotate(${grados}deg)`;
+  let premio = premiosRuleta[Math.floor(Math.random() * premiosRuleta.length)];
+  setTimeout(() => {
+    document.getElementById("resultadoRuleta").innerHTML = "🎉 Premio: " + premio;
+  }, 3000);
+}
+
+function guardarPremios() {
+  let texto = document.getElementById("editorPremios").value;
+  premiosRuleta = texto.split("\n").filter(p => p.trim() !== "");
+  dibujarRuleta();
+  alert("¡Premios guardados!");
+}
+
+document.getElementById("editorPremios").value = premiosRuleta.join("\n");
+
+// ==================== DAR PUNTOS ====================
+function darPuntos(p) {
+  let i = document.getElementById("estudianteActivo").value;
+  if (i === "") {
+    alert("Selecciona un estudiante primero");
+    return;
+  }
+  let fila = document.querySelectorAll("#tabla tr")[i];
+  let celda = fila.querySelector(".puntos");
+  celda.textContent = parseInt(celda.textContent) + p;
+  guardarPuntos();
+  actualizarPodio();
+  actualizarEquipos();
+}
+
+// ==================== JUEGOS ====================
+function juegoSumas() {
+  let a = Math.floor(Math.random() * 10) + 1;
+  let b = Math.floor(Math.random() * 10) + 1;
+  let r = a + b;
+  areaJuego.innerHTML = `
+    <h3>¿Cuánto es ${a} + ${b}?</h3>
+    <input type="number" id="respS" style="padding:10px; font-size:18px;">
+    <button onclick="if(parseInt(respS.value)==${r}){darPuntos(10);alert('¡Correcto!')}else{alert('Incorrecto')}">
+      Responder
+    </button>
+  `;
+}
+
+function juegoMultiplicar() {
+  let a = Math.floor(Math.random() * 10) + 1;
+  let b = Math.floor(Math.random() * 10) + 1;
+  let r = a * b;
+  areaJuego.innerHTML = `
+    <h3>¿Cuánto es ${a} × ${b}?</h3>
+    <input type="number" id="respM" style="padding:10px; font-size:18px;">
+    <button onclick="if(parseInt(respM.value)==${r}){darPuntos(15);alert('¡Correcto!')}else{alert('Incorrecto')}">
+      Responder
+    </button>
+  `;
+}
+
+function juegoRestas() {
+  let a = Math.floor(Math.random() * 20) + 10;
+  let b = Math.floor(Math.random() * 10);
+  let r = a - b;
+  areaJuego.innerHTML = `
+    <h3>¿Cuánto es ${a} - ${b}?</h3>
+    <input type="number" id="respR" style="padding:10px; font-size:18px;">
+    <button onclick="if(parseInt(respR.value)==${r}){darPuntos(10);alert('¡Correcto!')}else{alert('Incorrecto')}">
+      Responder
+    </button>
+  `;
+}
+
+function juegoDivision() {
+  let b = Math.floor(Math.random() * 9) + 2;
+  let r = Math.floor(Math.random() * 10) + 1;
+  let a = b * r;
+  areaJuego.innerHTML = `
+    <h3>¿Cuánto es ${a} ÷ ${b}?</h3>
+    <input type="number" id="respD" style="padding:10px; font-size:18px;">
+    <button onclick="if(parseInt(respD.value)==${r}){darPuntos(15);alert('¡Correcto!')}else{alert('Incorrecto')}">
+      Responder
+    </button>
+  `;
+}
+
+function juegoLectura() {
+  areaJuego.innerHTML = `
+    <p style="font-size:20px;">Lee en voz alta:</p>
+    <p style="font-size:24px; background:#fff; padding:20px; border-radius:10px;">
+      "El perro corre feliz en el parque mientras los niños juegan."
+    </p>
+    <button onclick="darPuntos(10)">✅ Leí correctamente</button>
+  `;
+}
+
+function juegoQuiz() {
+  areaJuego.innerHTML = `
+    <h3>¿Cuál es la capital de República Dominicana?</h3>
+    <button onclick="alert('Incorrecto')">Santiago</button>
+    <button onclick="darPuntos(10);alert('¡Correcto!')">Santo Domingo</button>
+    <button onclick="alert('Incorrecto')">La Vega</button>
+  `;
+}
+
+function juegoProblema() {
+  areaJuego.innerHTML = `
+    <h3>Juan tenía 10 dulces y regaló 4. ¿Cuántos le quedan?</h3>
+    <input type="number" id="respP" style="padding:10px; font-size:18px;">
+    <button onclick="if(parseInt(respP.value)==6){darPuntos(20);alert('¡Excelente!')}else{alert('Intenta otra vez')}">
+      Responder
+    </button>
+  `;
+}
+
+function juegoMemoria() {
+  areaJuego.innerHTML = `<h3>Memoriza:</h3><h1>8 × 7 = ?</h1><p>Tienes 3 segundos...</p>`;
+  setTimeout(() => {
+    areaJuego.innerHTML = `
+      <h3>¿Cuál era el resultado?</h3>
+      <input type="number" id="respMem" style="padding:10px; font-size:18px;">
+      <button onclick="if(parseInt(respMem.value)==56){darPuntos(20);alert('¡Memoria perfecta!')}else{alert('Incorrecto')}">
+        Responder
+      </button>
+    `;
+  }, 3000);
+}
+
+function juegoVF() {
+  areaJuego.innerHTML = `
+    <h3>La bandera dominicana tiene los colores rojo, azul y blanco</h3>
+    <button onclick="darPuntos(10);alert('¡Correcto!')" style="background:green;">✅ Verdadero</button>
+    <button onclick="alert('Incorrecto')" style="background:red;">❌ Falso</button>
+  `;
+}
+
+function juegoTiempo() {
+  let tiempo = 10;
+  let a = 9, b = 9, r = 81;
+  areaJuego.innerHTML = `
+    <h3>⏱️ ¡Resuelve antes que acabe el tiempo!</h3>
+    <h2>${a} × ${b} = ?</h2>
+    <input type="number" id="respT" style="padding:10px; font-size:18px;">
+    <p style="font-size:30px; color:red;" id="cronometro">${tiempo}</p>
+  `;
+  let intervalo = setInterval(() => {
+    tiempo--;
+    document.getElementById("cronometro").innerHTML = tiempo;
+    if (tiempo == 0) {
+      clearInterval(intervalo);
+      if (parseInt(document.getElementById("respT").value) == r) {
+        darPuntos(30);
+        alert("¡A tiempo! +30 puntos");
+      } else {
+        alert("Se acabó el tiempo");
+      }
+    }
+  }, 1000);
+}
+
+// ==================== KAHOOT ====================
+let preguntasKahoot = [
+  {pregunta: "5 × 4", opciones: ["10", "20", "15"], correcta: 1}
+];
+let actual = 0;
+
+function juegoKahoot() {
+  actual = 0;
+  mostrarK();
+}
+
+function mostrarK() {
+  let p = preguntasKahoot[actual];
+  areaJuego.innerHTML = `
+    <h3>${p.pregunta}</h3>
+    ${p.opciones.map((o, i) => `<button onclick="respK(${i})">${o}</button>`).join("")}
+  `;
+}
+
+function respK(i) {
+  if (i == preguntasKahoot[actual].correcta) {
+    darPuntos(20);
+    alert("¡Correcto!");
+  } else {
+    alert("Incorrecto");
+  }
+}
+
+// ==================== TIENDA ====================
+function comprar(costo) {
+  let i = document.getElementById("comprador").value;
+  if (i === "") {
+    alert("Selecciona un estudiante");
+    return;
+  }
+  let fila = document.querySelectorAll("#tabla tr")[i];
+  let celda = fila.querySelector(".puntos");
+  let puntos = parseInt(celda.textContent);
+  if (puntos < costo) {
+    document.getElementById("mensajeCompra").innerHTML = "❌ No tiene puntos suficientes";
+    return;
+  }
+  celda.textContent = puntos - costo;
+  guardarPuntos();
+  document.getElementById("mensajeCompra").innerHTML = "✅ ¡Premio comprado!";
+  actualizarPodio();
+  actualizarEquipos();
+}
+
+// ==================== RESET ====================
+function resetear() {
+  if (confirm("¿Estás seguro de reiniciar todos los puntos?")) {
+    localStorage.removeItem("puntosEstudiantes");
+    location.reload();
+  }
+}
+
+// ==================== INICIALIZAR ====================
+dibujarRuleta();
+actualizarPodio();
+actualizarEquipos();
+
+</script>
+
+</body>
+</html>
